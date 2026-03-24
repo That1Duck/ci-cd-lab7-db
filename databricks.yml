@@ -1,0 +1,68 @@
+# This is a Databricks asset bundle definition for lab6_mazhara.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: lab6_mazhara
+  uuid: a8c93602-7c44-494a-bc58-5135ce33052a
+
+# Variable declarations. These variables are assigned in the dev/prod targets below.
+variables:
+  catalog:
+    description: dbr_dev
+  schema:
+    description: mazhara_bronze
+
+resources:
+  pipelines:
+    mazhara_pipeline:
+      name: "lab6_stream_mazhara"
+      serverless: false
+      clusters:
+        - label: "default"
+          node_type_id: "Standard_F4"
+          num_workers: 1
+
+      notifications:
+        - email_recipients: 
+            - "mazhara.kirill@softserve.academy"
+          alerts:
+            - "on-update-failure"
+            - "on-update-fatal-failure"
+
+      catalog: "dbr_dev" 
+      target: "mazhara_bronze"
+      libraries:
+        - file:
+            path: ./src/transformations/eh_to_bronze.py
+        - file:
+            path: ./src/transformations/bronze_to_silver.py
+        - file:
+            path: ./src/transformations/silver_to_gold.py
+
+
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405605185991044.4.azuredatabricks.net
+    variables:
+      catalog: dbr_dev
+      schema: ${workspace.current_user.short_name}
+    presets:
+      artifacts_dynamic_version: true
+
+
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405605185991044.4.azuredatabricks.net
+      root_path: /Workspace/Users/mazhara.kirill@softserve.academy/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: dbr_dev
+      schema: prod
+    permissions:
+      - user_name: mazhara.kirill@softserve.academy
+        level: CAN_MANAGE
+      - group_name: "users"
+        level: CAN_VIEW
