@@ -43,11 +43,11 @@ resources:
         - file:
             path: ./src/transformations/silver_to_gold.py
 
-  dashboards:
-    mazhara_monitoring:
-      display_name: "Monitoring Dashboard [${bundle.target}]"
-      file_path: ./resources/Lab7_mazhara.lvdash.json
-      warehouse_id: ${var.my_warehouse_id}
+  # dashboards:
+  #   mazhara_monitoring:
+  #     display_name: "Monitoring Dashboard [${bundle.target}]"
+  #     file_path: ./resources/Lab7_mazhara.lvdash.json
+  #     warehouse_id: ${var.my_warehouse_id}
 
 
 
