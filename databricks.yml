@@ -8,10 +8,13 @@ bundle:
 variables:
   catalog:
     description: dbr_dev
+    default: "mazhara_bronze"
   schema:
     description: mazhara_bronze
+    default: "mazhara_bronze"
   my_warehouse_id:
     description: "The ID of the SQL Warehouse for dashboards"
+    default: ""
 
 
 resources:
