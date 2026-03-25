@@ -10,17 +10,12 @@ variables:
     description: dbr_dev
   schema:
     description: mazhara_bronze
-  warehouse_id:
+  my_warehouse_id:
     description: "The ID of the SQL Warehouse for dashboards"
 
 
 resources:
-  dashboards:
-    mazhara_monitoring:
-      name: "Monitoring Dashboard [${bundle.target}]"
-      file_path: ./resources/Lab7_mazhara.lvdash.json
-      warehouse_id: ${var.warehouse_id}
-
+  
   pipelines:
     mazhara_pipeline:
       name: "lab7_stream_mazhara_${bundle.target}"
@@ -47,6 +42,12 @@ resources:
         - file:
             path: ./src/transformations/silver_to_gold.py
 
+  dashboards:
+    mazhara_monitoring:
+      name: "Monitoring Dashboard [${bundle.target}]"
+      file_path: ./resources/Lab7_mazhara.lvdash.json
+      warehouse_id: ${var.my_warehouse_id}
+
 
 
 targets:
@@ -65,9 +66,9 @@ targets:
   test:
     mode: development
     workspace:
-      host: ${bundle.target.host}
+      root_path: /Workspace/Users/mazhara.kirill@softserve.academy/.bundle/${bundle.name}/${bundle.target}
     variables:
-      catalog: dbr_dev
+      catalog: mazhara_test
       schema: ${workspace.current_user.short_name}
     permissions:
       - user_name: mazhara.kirill@softserve.academy
