@@ -58,6 +58,7 @@ targets:
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
+      my_warehouse_id: ${var.my_warehouse_id}
     presets:
       artifacts_dynamic_version: true
 
@@ -69,6 +70,7 @@ targets:
     variables:
       catalog: mazhara_test
       schema: mazhara_bronze
+      my_warehouse_id: ${var.my_warehouse_id}
     permissions:
       - user_name: mazhara.kirill@softserve.academy
         level: CAN_MANAGE
