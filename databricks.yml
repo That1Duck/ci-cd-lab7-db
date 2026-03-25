@@ -1,7 +1,7 @@
 # This is a Databricks asset bundle definition for lab6_mazhara.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
-  name: lab6_mazhara
+  name: lab7_mazhara
   uuid: a8c93602-7c44-494a-bc58-5135ce33052a
 
 # Variable declarations. These variables are assigned in the dev/prod targets below.
@@ -10,11 +10,20 @@ variables:
     description: dbr_dev
   schema:
     description: mazhara_bronze
+  warehouse_id:
+    description: "The ID of the SQL Warehouse for dashboards"
+
 
 resources:
+  dashboards:
+    mazhara_monitoring:
+      name: "Monitoring Dashboard [${bundle.target}]"
+      file_path: ./resources/Lab7_mazhara.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+
   pipelines:
     mazhara_pipeline:
-      name: "lab6_stream_mazhara"
+      name: "lab7_stream_mazhara_${bundle.target}"
       serverless: false
       clusters:
         - label: "default"
@@ -28,8 +37,8 @@ resources:
             - "on-update-failure"
             - "on-update-fatal-failure"
 
-      catalog: "dbr_dev" 
-      target: "mazhara_bronze"
+      catalog: ${var.catalog}
+      target: ${var.schema}
       libraries:
         - file:
             path: ./src/transformations/eh_to_bronze.py
@@ -45,7 +54,7 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://adb-7405605185991044.4.azuredatabricks.net
+      host: ${bundle.target.host}
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
@@ -53,14 +62,13 @@ targets:
       artifacts_dynamic_version: true
 
 
-  prod:
-    mode: production
+  test:
+    mode: development
     workspace:
-      host: https://adb-7405605185991044.4.azuredatabricks.net
-      root_path: /Workspace/Users/mazhara.kirill@softserve.academy/.bundle/${bundle.name}/${bundle.target}
+      host: ${bundle.target.host}
     variables:
       catalog: dbr_dev
-      schema: prod
+      schema: ${workspace.current_user.short_name}
     permissions:
       - user_name: mazhara.kirill@softserve.academy
         level: CAN_MANAGE

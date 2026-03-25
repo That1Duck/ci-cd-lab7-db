@@ -1,0 +1,26 @@
+name: Databricks Bundle Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # VM from github
+    runs-on: ubuntu-latest
+    steps:
+      # copy code 
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # install databricks
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+      # deploy
+      - name: Deploy Bundle to TEST
+        run: |
+          databricks bundle deploy --target test
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}

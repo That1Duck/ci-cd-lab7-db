@@ -1,0 +1,394 @@
+{
+  "datasets": [
+    {
+      "name": "12463418",
+      "displayName": "Aggregated Revenue Orders and City Coverage Summary",
+      "queryLines": [
+        "SELECT \r\n",
+        "  sum(total_revenue) as revenue,\r\n",
+        "  sum(total_orders) as orders,\r\n",
+        "  count(distinct city) as cities_covered\r\n",
+        "FROM ${catalog}.${schema}"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "mazhara_gold"
+    },
+    {
+      "name": "e2fcc638",
+      "displayName": "City Revenue Rankings Dataset",
+      "queryLines": [
+        "SELECT city, total_revenue \r\n",
+        "FROM ${catalog}.${schema}\r\n",
+        "ORDER BY total_revenue DESC"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "mazhara_bronze"
+    },
+    {
+      "name": "2f448ece",
+      "displayName": "Citywise Sales Summary by Category and Revenue Metrics",
+      "queryLines": [
+        "SELECT \r\n",
+        "    city, \r\n",
+        "    category, \r\n",
+        "    sum(total_revenue) as revenue, \r\n",
+        "    sum(total_orders) as orders_count,\r\n",
+        "    (sum(total_revenue) / sum(total_orders)) as avg_check\r\n",
+        "FROM ${catalog}.${schema}\r\n",
+        "GROUP BY city, category"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "mazhara_gold"
+    }
+  ],
+  "pages": [
+    {
+      "name": "8215392c",
+      "displayName": "Dashboards",
+      "layout": [
+        {
+          "widget": {
+            "name": "aggregated-revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "12463418",
+                  "fields": [
+                    {
+                      "name": "sum(orders)",
+                      "expression": "SUM(`orders`)"
+                    },
+                    {
+                      "name": "sum(revenue)",
+                      "expression": "SUM(`revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Aggregated Revenue + Amount of orders",
+                "showDescription": false
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(revenue)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  }
+                },
+                "target": {
+                  "fieldName": "sum(orders)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "city-revenue-ranking",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "e2fcc638",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`city` IN (`city`) OR TRUE"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "City Revenue Ranknig"
+              },
+              "widgetType": "histogram",
+              "encodings": {
+                "x": {
+                  "fieldName": "city",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "citywise-sales",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "2f448ece",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "count(avg_check)",
+                      "expression": "COUNT(`avg_check`)"
+                    },
+                    {
+                      "name": "orders_count",
+                      "expression": "`orders_count`"
+                    },
+                    {
+                      "name": "revenue",
+                      "expression": "`revenue`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Citywise Sales"
+              },
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "orders_count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "revenue",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "size": {
+                  "fieldName": "count(avg_check)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 12,
+            "height": 14
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "757dd101",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "city-type-revenue-ranking",
+            "queries": [
+              {
+                "name": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f1231183df1a31ba6a20dc6766f6df_city",
+                "query": {
+                  "datasetName": "e2fcc638",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "City type for Revenue Ranking"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "city",
+                    "queryName": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f1231183df1a31ba6a20dc6766f6df_city"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "city-for-sales",
+            "queries": [
+              {
+                "name": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f123cbfb2c1173b553b6e3a4176c43_city",
+                "query": {
+                  "datasetName": "2f448ece",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "City for Sales"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "city",
+                    "queryName": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f123cbfb2c1173b553b6e3a4176c43_city"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "category-for-sales",
+            "queries": [
+              {
+                "name": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f123cbfb2c1173b553b6e3a4176c43_category",
+                "query": {
+                  "datasetName": "2f448ece",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "category_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Category for Sales"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "category",
+                    "queryName": "dashboards/01f12311725f1d649d969dec8762cf58/datasets/01f123cbfb2c1173b553b6e3a4176c43_category"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
