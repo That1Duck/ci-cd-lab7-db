@@ -11,7 +11,7 @@ variables:
   schema:
     default: "mazhara_bronze"
   my_warehouse_id:
-    description: "The ID of the SQL Warehouse"
+    description: "The ID of the SQL Warehouse test"
 
 
 resources:
