@@ -11,7 +11,7 @@ variables:
   schema:
     default: "mazhara_bronze"
   my_warehouse_id:
-    default: ""
+    description: "The ID of the SQL Warehouse"
 
 
 resources:
@@ -67,7 +67,7 @@ targets:
       root_path: /Workspace/Users/mazhara.kirill@softserve.academy/.bundle/${bundle.name}/${bundle.target}
     variables:
       catalog: mazhara_test
-      schema: ${workspace.current_user.short_name}
+      schema: mazhara_bronze
     permissions:
       - user_name: mazhara.kirill@softserve.academy
         level: CAN_MANAGE
