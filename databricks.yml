@@ -44,7 +44,7 @@ resources:
 
   dashboards:
     mazhara_monitoring:
-      name: "Monitoring Dashboard [${bundle.target}]"
+      display_name: "Monitoring Dashboard [${bundle.target}]"
       file_path: ./resources/Lab7_mazhara.lvdash.json
       warehouse_id: ${var.my_warehouse_id}
 
@@ -54,8 +54,6 @@ targets:
   dev:
     mode: development
     default: true
-    workspace:
-      host: ${bundle.target.host}
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
