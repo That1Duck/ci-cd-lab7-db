@@ -7,7 +7,7 @@ bundle:
 # Variable declarations. These variables are assigned in the dev/prod targets below.
 variables:
   catalog:
-    default: "mazhara_bronze"
+    default: "dbr_dev"
   schema:
     default: "mazhara_bronze"
   my_warehouse_id:
