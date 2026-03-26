@@ -15,7 +15,6 @@ variables:
 
 
 resources:
-  
   pipelines:
     mazhara_pipeline:
       name: "lab7_stream_mazhara_${bundle.target}"
@@ -34,7 +33,7 @@ resources:
 
       catalog: ${var.catalog}
       target: ${var.schema}
-      my_warehouse_id: ${var.my_warehouse_id}
+      
       libraries:
         - file:
             path: ./src/transformations/eh_to_bronze.py
@@ -47,7 +46,7 @@ resources:
     mazhara_monitoring:
       display_name: "Monitoring Dashboard [${bundle.target}]"
       file_path: ./resources/Lab7_mazhara.lvdash.json
-      my_warehouse_id: ${var.my_warehouse_id}
+      warehouse_id: ${var.my_warehouse_id}
 
 
 
@@ -69,6 +68,7 @@ targets:
     variables:
       catalog: mazhara_test
       schema: mazhara_bronze
+      my_warehouse_id: ${var.my_warehouse_id}
     permissions:
       - user_name: mazhara.kirill@softserve.academy
         level: CAN_MANAGE
