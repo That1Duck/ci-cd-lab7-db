@@ -8,7 +8,7 @@
         "  sum(total_revenue) as revenue,\r\n",
         "  sum(total_orders) as orders,\r\n",
         "  count(distinct city) as cities_covered\r\n",
-        "FROM ${catalog}.${schema}.<table_name>"
+        "FROM mazhara_test.mazhara_gold.report_sales_by_city_gold"
       ],
       "catalog": "dbr_dev",
       "schema": "mazhara_gold"
@@ -18,7 +18,7 @@
       "displayName": "City Revenue Rankings Dataset",
       "queryLines": [
         "SELECT city, total_revenue \r\n",
-        "FROM ${var.catalog}.${var.schema}.<table_name>\r\n",
+        "FROM mazhara_test.mazhara_gold.report_sales_by_city_gold\r\n",
         "ORDER BY total_revenue DESC"
       ],
       "catalog": "dbr_dev",
@@ -34,7 +34,7 @@
         "    sum(total_revenue) as revenue, \r\n",
         "    sum(total_orders) as orders_count,\r\n",
         "    (sum(total_revenue) / sum(total_orders)) as avg_check\r\n",
-        "FROM ${var.catalog}.${var.schema}.<table_name>\r\n",
+        "FROM mazhara_test.mazhara_gold.report_sales_by_city_gold\r\n",
         "GROUP BY city, category"
       ],
       "catalog": "dbr_dev",
