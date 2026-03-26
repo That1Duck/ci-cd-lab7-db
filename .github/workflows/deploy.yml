@@ -23,4 +23,4 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          DATABRICKS_BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
+          BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
