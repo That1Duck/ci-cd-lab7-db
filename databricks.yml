@@ -34,7 +34,7 @@ resources:
 
       catalog: ${var.catalog}
       target: ${var.schema}
-      warehouse_id: ${var.my_warehouse_id}
+      my_warehouse_id: ${var.my_warehouse_id}
       libraries:
         - file:
             path: ./src/transformations/eh_to_bronze.py
@@ -47,7 +47,7 @@ resources:
     mazhara_monitoring:
       display_name: "Monitoring Dashboard [${bundle.target}]"
       file_path: ./resources/Lab7_mazhara.lvdash.json
-      warehouse_id: ${var.my_warehouse_id}
+      my_warehouse_id: ${var.my_warehouse_id}
 
 
 
