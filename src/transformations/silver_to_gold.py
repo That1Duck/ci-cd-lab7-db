@@ -34,7 +34,7 @@ def fact_sales():
 )
 def city_sales_report():
     facts = dlt.read("fact_sales_gold")
-    dims = dlt.read("dim_orders_history_gold").filter(col("__is_current") == True)
+    dims = dlt.read("dim_orders_history_gold").filter(col("__end_at").isNull())
     
     return (
         facts.join(dims, "order_id", "inner")
