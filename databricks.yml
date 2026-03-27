@@ -54,7 +54,7 @@ resources:
 
       tasks:
         - task_key: apply_sql
-          new_clusters:
+          new_cluster:
             spark_version: "17.3.x-scala2.13"
             node_type_id: "Standard_F4"
             num_workers: 1
