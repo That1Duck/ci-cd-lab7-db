@@ -10,16 +10,40 @@ jobs:
     # VM from github
     runs-on: ubuntu-latest
     steps:
-      # copy code 
+      
       - name: Checkout code
-        uses: actions/checkout@v3
-      # install databricks
+        uses: actions/checkout@v4
+      
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
-      # deploy
+      
+      - name: Validate bundle
+        run: databricks bundle validate --target test
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
+      
       - name: Deploy Bundle to TEST
         run: |
           databricks bundle deploy --target test
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
+
+      - name: Run pipeline
+        run: databricks bundle run --target test mazhara_pipeline --refresh-all
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
+
+      - name: Apply RLS and CLS
+        run: |
+          databricks sql query execute \
+            --warehouse-id "${{ secrets.SQL_WAREHOUSE_ID }}"\
+            --file sql/security_policies.sql
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
