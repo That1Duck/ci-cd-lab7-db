@@ -40,12 +40,18 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
 
-      - name: Install Databricks SQL CLI
-        run: python -m pip install databricks-sql-cli
+      - name: Apply RLS and CLS via SQL API
+        run: |
+          SQL_QUERY=$(cat security_policies.sql | sed ':a;N;$!ba;s/\n/ /g')
 
-      - name: Apply RLS and CLS
-        run: dbsqlcli -e "source security_policies.sql"
+        curl -X POST "$DATABRICKS_HOST/api/2.0/sql/statements/" \
+          -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"statement\": \"$SQL_QUERY\",
+            \"warehouse_id\": \"$SQL_WAREHOUSE_ID\"
+          }"
         env:
-          DBSQLCLI_HOST_NAME: ${{ secrets.DATABRICKS_HOST }}
-          DBSQLCLI_HTTP_PATH: ${{ secrets.SQL_WAREHOUSE_HTTP_PATH }}
-          DBSQLCLI_ACCESS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          SQL_WAREHOUSE_ID: ${{ secrets.SQL_WAREHOUSE_ID }}
