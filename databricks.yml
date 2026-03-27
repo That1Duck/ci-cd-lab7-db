@@ -48,6 +48,15 @@ resources:
       file_path: ./resources/Lab7_mazhara.lvdash.json
       warehouse_id: ${var.my_warehouse_id}
 
+  jobs:
+    apply_security:
+      name: apply_security_${bundle.target}
+
+      tasks:
+        - task_key: apply_sql
+          spark_python_task:
+            python_file: ./sql/apply_security.py
+
 
 
 targets:

@@ -41,10 +41,7 @@ jobs:
           BUNDLE_VAR_my_warehouse_id: ${{ secrets.SQL_WAREHOUSE_ID }}
 
       - name: Apply RLS and CLS
-        run: |
-          databricks sql query execute \
-            --warehouse-id "${{ secrets.SQL_WAREHOUSE_ID }}"\
-            --file sql/security_policies.sql
+        run: databricks bundle run --target test apply_security
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
