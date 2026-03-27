@@ -28,7 +28,7 @@ def orders_silver_clean():
         .drop("timestamp")
     )
 
-dlt.table(
+dlt.create_streaming_table(
     name="mazhara_silver.orders_silver_scd",
     comment="History of orders (SCD Type 2)",
     table_properties={
