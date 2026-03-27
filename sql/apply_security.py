@@ -26,13 +26,13 @@ RETURN
 
 # Apply CLS to column
 spark.sql("""
-ALTER TABLE mazhara_test.mazhara_gold.fact_sales_gold
+ALTER MATERIALIZED VIEW mazhara_test.mazhara_gold.fact_sales_gold
 ALTER COLUMN user_email
 SET MASK mazhara_test.mazhara_silver.email_mask
 """)
 
 # Apply RLS to table
 spark.sql("""
-ALTER TABLE mazhara_test.mazhara_gold.fact_sales_gold
+ALTER MATERIALIZED VIEW mazhara_test.mazhara_gold.fact_sales_gold
 SET ROW FILTER mazhara_test.mazhara_silver.row_filter ON ()
 """)

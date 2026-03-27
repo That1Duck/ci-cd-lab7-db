@@ -5,7 +5,7 @@ RETURN CASE
     'mazhara.kirill@softserve.academy',
     'squ14sssm@softserve.academy'
   ) THEN email
-  WHEN is_account_group_member('admins') THEN email
+  WHEN is_account_group_member('admins') THEN user_email
   ELSE regexp_replace(email, '(?<=.).(?=.*@)', '*')
 END;
 
