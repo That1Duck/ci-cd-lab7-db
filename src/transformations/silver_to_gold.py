@@ -25,8 +25,7 @@ def fact_sales():
     return (
         dlt.read("mazhara_silver.orders_silver_clean") # Читаем чистое имя
         .filter(col("event_type") == "ORDER")
-        .withColumn("user_email_masked", regexp_replace(col("user_email"), r"(?<=.).(?=.*@)", "*"))
-        .select("order_id", "amount", "user_email_masked", "event_timestamp")
+        .select("order_id", "amount", "user_email", "event_timestamp")
     )
 
 @dlt.table(

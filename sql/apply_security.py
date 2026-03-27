@@ -27,7 +27,7 @@ RETURN
 # Apply CLS to column
 spark.sql("""
 ALTER TABLE mazhara_test.mazhara_gold.fact_sales_gold
-ALTER COLUMN email
+ALTER COLUMN user_email
 SET MASK mazhara_test.mazhara_silver.email_mask
 """)
 
