@@ -2,12 +2,12 @@ import dlt
 from pyspark.sql.functions import *
 
 @dlt.table(
-    name="dim_orders_history_gold", 
+    name="mazhara_gold.dim_orders_history_gold", 
     comment="Complete Order Change History (SCD 2)"
 )
 def dim_orders_history():
     return (
-        dlt.read("orders_silver_scd") 
+        dlt.read("mazhara_silver.orders_silver_scd") 
         .select(
             "order_id", 
             "status", 
@@ -19,22 +19,22 @@ def dim_orders_history():
     )
 
 @dlt.table(
-    name="fact_sales_gold", 
+    name="mazhara_gold.fact_sales_gold", 
 )
 def fact_sales():
     return (
-        dlt.read("orders_silver_clean") # Читаем чистое имя
+        dlt.read("mazhara_silver.orders_silver_clean") # Читаем чистое имя
         .filter(col("event_type") == "ORDER")
         .withColumn("user_email_masked", regexp_replace(col("user_email"), r"(?<=.).(?=.*@)", "*"))
         .select("order_id", "amount", "user_email_masked", "event_timestamp")
     )
 
 @dlt.table(
-    name="report_sales_by_city_gold" 
+    name="mazhara_gold.report_sales_by_city_gold" 
 )
 def city_sales_report():
-    facts = dlt.read("fact_sales_gold")
-    dims = dlt.read("dim_orders_history_gold").filter(col("__end_at").isNull())
+    facts = dlt.read("mazhara_gold.fact_sales_gold")
+    dims = dlt.read("mazhara_gold.dim_orders_history_gold").filter(col("__end_at").isNull())
     
     return (
         facts.join(dims, "order_id", "inner")

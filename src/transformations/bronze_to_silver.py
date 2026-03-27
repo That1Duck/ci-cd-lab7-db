@@ -14,7 +14,7 @@ json_schema = StructType([
 ])
 
 @dlt.table(
-    name="orders_silver_clean", 
+    name="mazhara_silver.orders_silver_clean", 
     comment="Cleaned data from Bronze with a total amount check"
 )
 @dlt.expect_or_drop("valid_amount", "amount < 100000")
@@ -28,17 +28,16 @@ def orders_silver_clean():
         .drop("timestamp")
     )
 
-dlt.create_streaming_table(
-    name="orders_silver_scd",
+dlt.table(
+    name="mazhara_silver.orders_silver_scd",
     comment="History of orders (SCD Type 2)",
     table_properties={
         "quality": "silver"
     }
 )
-
 dlt.apply_changes(
-    target = "orders_silver_scd",
-    source = "orders_silver_clean",
+    target = "mazhara_silver.orders_silver_scd",
+    source = "mazhara_silver.orders_silver_clean",
     keys = ["order_id"],
     sequence_by = col("event_timestamp"),
     stored_as_scd_type = "2",
